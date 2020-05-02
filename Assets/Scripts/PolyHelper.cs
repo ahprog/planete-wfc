@@ -29,19 +29,15 @@ public class PolyHelper : MonoBehaviour
             Vector3 normal = face.GetComponent<MeshFilter>().sharedMesh.normals[0];
             newFace.forward = normal;
 
-            //TODO : il faut prendre en compte la rotation faite avec la normale
             //Il ne manque plus que la rotation autour du vecteur Z
             Vector3 perpOld = GetPerpendicularVector(face.GetComponent<MeshFilter>().sharedMesh);
             Vector3 perpNew = GetPerpendicularVector(newFace.GetComponent<MeshFilter>().sharedMesh);
 
             perpNew = Quaternion.AngleAxis(newFace.localEulerAngles.x, transform.right) * perpNew;
             perpNew = Quaternion.AngleAxis(newFace.localEulerAngles.y, transform.up) * perpNew;
-
-            Debug.DrawLine(face.position, face.position + perpOld, Color.white, 100);
-            Debug.DrawLine(newFace.position, newFace.position + perpNew, Color.yellow, 100);
-
             
             float angleZ = Vector3.Angle(perpOld, perpNew);
+            angleZ = (Vector3.Dot(perpOld, transform.up) > 0) ? -angleZ : angleZ;
 
             newFace.transform.localRotation = Quaternion.Euler(new Vector3(
                 newFace.transform.localRotation.eulerAngles.x,
@@ -49,7 +45,7 @@ public class PolyHelper : MonoBehaviour
                 angleZ
             ));
             
-            newFace.name = face.name + "(clone)";
+            newFace.name = face.name + " (clone)";
         }
     }
 
