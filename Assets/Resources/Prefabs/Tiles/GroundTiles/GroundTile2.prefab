@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 4325174387542498296}
   - component: {fileID: 4709953287596122574}
   - component: {fileID: 1324503475804069175}
+  - component: {fileID: 1788590829520548477}
   m_Layer: 0
-  m_Name: Test face
+  m_Name: GroundTile2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,6 +82,18 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &1788590829520548477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 746826679535561195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c74ab4bb9800d634c9afd2db1c8f6612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5756196321484749250
 GameObject:
   m_ObjectHideFlags: 0

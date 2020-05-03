@@ -22,7 +22,6 @@ public class TileGenerator : MonoBehaviour
         RemoveTiles();
         foreach (Transform child in planet) {
             Transform tile = Instantiate(m_TilePrefabs[Random.Range(0, m_TilePrefabs.Length)], child);
-            tile.gameObject.AddComponent<Tile>();
         }
     }
 

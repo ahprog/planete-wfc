@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 3881240572386630870}
   - component: {fileID: 5226402094671423200}
   - component: {fileID: 1998296863739255321}
-  - component: {fileID: -4254495350194437195}
+  - component: {fileID: -1775836329100838836}
   m_Layer: 0
-  m_Name: GroundTile1
+  m_Name: CityTile1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a4445efd1de71e54999de5dd1c4e9424, type: 2}
+  - {fileID: 2100000, guid: 0b88a67b19b795c4b8eb31e50f2b3b9f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -80,7 +80,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &-4254495350194437195
+--- !u!114 &-1775836329100838836
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

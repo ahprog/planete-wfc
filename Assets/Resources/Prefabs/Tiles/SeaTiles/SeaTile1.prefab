@@ -11,8 +11,9 @@ GameObject:
   - component: {fileID: 3881240572386630870}
   - component: {fileID: 5226402094671423200}
   - component: {fileID: 1998296863739255321}
+  - component: {fileID: 6074599508450086360}
   m_Layer: 0
-  m_Name: face
+  m_Name: SeaTile1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +59,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a4445efd1de71e54999de5dd1c4e9424, type: 2}
+  - {fileID: 2100000, guid: 47df0c6d42d738f4c8021a6e397d4322, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -79,3 +80,15 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &6074599508450086360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254372445847727813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c74ab4bb9800d634c9afd2db1c8f6612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
