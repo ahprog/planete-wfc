@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlanetViewer : MonoBehaviour
 {
     public Transform planet;
+    public Transform planetSystem;
     public Camera mainCamera;
     public Texture2D baseCursor;
     public Texture2D dragCursor;
@@ -41,10 +42,15 @@ public class PlanetViewer : MonoBehaviour
         if (m_IsMoving) {
             Vector3 mouseMove = m_PrevMousePos - Input.mousePosition;
 
-            planet.Rotate(Vector3.right, -mouseMove.y * Time.deltaTime * m_Speed, Space.World);
-            planet.Rotate(Vector3.up, mouseMove.x * Time.deltaTime * m_Speed, Space.World);
+            planetSystem.Rotate(Vector3.right, -mouseMove.y * Time.deltaTime * m_Speed, Space.World);
+            planetSystem.Rotate(Vector3.up, mouseMove.x * Time.deltaTime * m_Speed, Space.World);
 
             m_PrevMousePos = Input.mousePosition;
         }
+    }
+
+    public void Reset()
+    {
+        planetSystem.localEulerAngles = Vector3.zero;
     }
 }
