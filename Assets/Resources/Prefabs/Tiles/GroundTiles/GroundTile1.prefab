@@ -95,5 +95,5 @@ MonoBehaviour:
   AType: 0
   BType: 0
   CType: 0
-  weight: 1
+  weight: 10
   isPossible: 1

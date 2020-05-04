@@ -96,7 +96,7 @@ MonoBehaviour:
   AType: 0
   BType: 0
   CType: 2
-  weight: 1
+  weight: 10
   isPossible: 1
 --- !u!1 &2025123455159576556
 GameObject:
