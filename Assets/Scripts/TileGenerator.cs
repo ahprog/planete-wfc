@@ -52,10 +52,6 @@ public class TileGenerator : MonoBehaviour
     public void GenerateTiles()
     {
         RemoveTileModels();
-        foreach (Tile tile in m_Tiles) {
-            tile.Collapse();
-        }
-
 
         int numberOfTilesRemaining = m_TileModelPrefabs.Length;
         while (numberOfTilesRemaining > 0) {
@@ -68,7 +64,7 @@ public class TileGenerator : MonoBehaviour
                 tile.Collapse();
 
                 //3. propagate
-                tile.Propagate();
+                tile.LaunchPropagation();
 
                 numberOfTilesRemaining -= 1;
             }
@@ -94,10 +90,15 @@ public class TileGenerator : MonoBehaviour
         return (null, WFCReturnState.ContradictionFound);
     }
 
-    private void OnContradiction()
+    public void OnContradiction()
     {
         //TODO : ici il faut reset la generation
         Debug.Log("CONTRADICTION FOUND");
+    }
+
+    public void RegisterNewEntropy()
+    {
+
     }
 
     public void RemoveTileModels()

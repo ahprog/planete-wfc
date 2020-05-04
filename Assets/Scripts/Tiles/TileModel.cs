@@ -23,4 +23,23 @@ public class TileModel : MonoBehaviour
 
     [HideInInspector]
     public bool isPossible = true;
+
+    public bool IsCompatible(TileModel other, TileSide side)
+    {
+        bool isCompatible = false;
+        switch (side) {
+            case TileSide.AB:
+                isCompatible = (AType == other.CType && BType == other.BType);
+                break;
+            case TileSide.BC:
+                isCompatible = (BType == other.BType && CType == other.BType);
+                break;
+            case TileSide.CA:
+                isCompatible = (CType == other.AType && AType == other.CType);
+                break;
+            default:
+                break;
+        }
+        return isCompatible;
+    }
 }

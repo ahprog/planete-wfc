@@ -16,11 +16,12 @@ public class Tile : MonoBehaviour
      */
 
     public Tile[] neighbours = new Tile[3];
+    public TileGenerator tileGenerator;
 
     [HideInInspector]
     public bool isCollapsed = false;
 
-    private TileModel[] m_PossibleTileModels;
+    private TileModel[] m_TileModels;
     private TileModel m_SavedTileModel;
 
     private float m_SumAllWeights = 0;
@@ -29,7 +30,7 @@ public class Tile : MonoBehaviour
 
     public void InitTileModels(TileModel[] tileModels, float sumWeights, float sumWeightsLogWeights)
     {
-        m_PossibleTileModels = (TileModel[]) tileModels.Clone();
+        m_TileModels = (TileModel[]) tileModels.Clone();
         m_SumAllWeights = sumWeights;
         m_SumAllWeightsLogWeights = sumWeightsLogWeights;
     }
@@ -38,11 +39,11 @@ public class Tile : MonoBehaviour
     public void Collapse()
     {
         int tileModelIndex = GetPossibleTileIndex();
-        m_SavedTileModel = Instantiate(m_PossibleTileModels[tileModelIndex].transform, transform).GetComponent<TileModel>();
+        m_SavedTileModel = Instantiate(m_TileModels[tileModelIndex].transform, transform).GetComponent<TileModel>();
 
-        for (int i = 0; i < m_PossibleTileModels.Length; ++i) {
+        for (int i = 0; i < m_TileModels.Length; ++i) {
             if (i != tileModelIndex) {
-                m_PossibleTileModels[i].isPossible = false;
+                m_TileModels[i].isPossible = false;
             }
         }
     }
@@ -51,10 +52,10 @@ public class Tile : MonoBehaviour
     {
         float remaining = m_SumAllWeights;
 
-        for (int index = 0; index < m_PossibleTileModels.Length; ++index) {
-            if (m_PossibleTileModels[index].isPossible) {
-                if (remaining >= m_PossibleTileModels[index].weight) {
-                    remaining -= m_PossibleTileModels[index].weight;
+        for (int index = 0; index < m_TileModels.Length; ++index) {
+            if (m_TileModels[index].isPossible) {
+                if (remaining >= m_TileModels[index].weight) {
+                    remaining -= m_TileModels[index].weight;
                 }
                 else {
                     return index;
@@ -65,19 +66,78 @@ public class Tile : MonoBehaviour
         throw new System.ArithmeticException("Erreur : m_SumAllWeights ne reflete pas la somme des probas de toute les tiles possibles");
     }
 
-    public void Propagate()
-    {
 
+    public void LaunchPropagation()
+    {
+        neighbours[(int)TileSide.AB].Propagate(this, TileSide.AB);
+        neighbours[(int)TileSide.BC].Propagate(this, TileSide.BC);
+        neighbours[(int)TileSide.CA].Propagate(this, TileSide.CA);
+    }
+
+    private void Propagate(Tile prev, TileSide side)
+    {
+        if (prev.HasNoPossibleTiles()) {
+            tileGenerator.OnContradiction();
+            return;
+        }
+
+        bool hasChanged = false;
+
+        foreach ((TileModel possibleTileModel, int id) in new PossibleTileModelIterator(m_TileModels)) {
+            bool foundCompatible = false;
+            foreach ((TileModel prevPossibleTileModel, int idPrev) in new PossibleTileModelIterator(prev.GetTileModels())) {
+                if (prevPossibleTileModel.IsCompatible(possibleTileModel, side)) {
+                    foundCompatible = true;
+                    break;
+                }
+            }
+
+            if (!foundCompatible) {
+                RemovePossibleTileModel(id);
+                hasChanged = true;
+            }
+        }
+
+        //On continue la propagation si on a supprimé au moins une tile possible
+        if (hasChanged) {
+            switch (side) {
+                case TileSide.AB:
+                    Propagate(this, TileSide.BC);
+                    Propagate(this, TileSide.CA);
+                    break;
+                case TileSide.BC:
+                    Propagate(this, TileSide.CA);
+                    Propagate(this, TileSide.AB);
+                    break;
+                case TileSide.CA:
+                    Propagate(this, TileSide.AB);
+                    Propagate(this, TileSide.BC);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private bool HasNoPossibleTiles()
+    {
+        int cpt = 0;
+        foreach ((TileModel possibleTileModel, int id) in new PossibleTileModelIterator(m_TileModels)) {
+            cpt++;
+        }
+        return (cpt < 1);
+    }
+
+    private void RemovePossibleTileModel(int index)
+    {
+        m_TileModels[index].isPossible = false;
+        m_SumAllWeights -= m_TileModels[index].weight;
+        m_SumAllWeightsLogWeights -= m_TileModels[index].weight * Mathf.Log(m_TileModels[index].weight, 2);
     }
 
     public float Entropy()
     {
         return Mathf.Log(m_SumAllWeights, 2) - (m_SumAllWeightsLogWeights / m_SumAllWeights);
-    }
-
-    public void RemovePossibleTileModel(int tileModelIndex)
-    {
-        m_PossibleTileModels[tileModelIndex].isPossible = false;
     }
 
     public void RemoveSavedTileModel()
@@ -106,5 +166,34 @@ public class Tile : MonoBehaviour
         }
 
         return opposite;
+    }
+
+    public TileModel[] GetTileModels()
+    {
+        return m_TileModels;
+    }
+}
+
+//Pour itérer seulement sur les TileModel possibles
+public class PossibleTileModelIterator : IEnumerable<(TileModel, int)>
+{
+    private TileModel[] m_TileModels;
+    public PossibleTileModelIterator(TileModel[] tileModels)
+    {
+        m_TileModels = tileModels;
+    }
+
+    public IEnumerator<(TileModel, int)> GetEnumerator()
+    {
+        for (int i = 0; i < m_TileModels.Length; ++i) {
+            if (m_TileModels[i].isPossible) {
+                yield return (m_TileModels[i], i);
+            }
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }
