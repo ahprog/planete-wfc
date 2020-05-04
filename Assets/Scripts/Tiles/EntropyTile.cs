@@ -15,8 +15,6 @@ public class EntropyTile : IComparable<EntropyTile>
 
     public int CompareTo(EntropyTile other)
     {
-        if (entropy > other.entropy) return 1;
-        if (entropy < other.entropy) return -1;
-        else return 0;
+        return entropy.CompareTo(other.entropy);
     }
 }

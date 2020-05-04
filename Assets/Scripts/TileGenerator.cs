@@ -4,12 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public enum WFCReturnState
-{
-    Good,
-    ContradictionFound
-}
-
 public class TileGenerator : MonoBehaviour
 {
     public Transform planet;
@@ -35,7 +29,7 @@ public class TileGenerator : MonoBehaviour
     private void LoadTiles()
     {
         m_TileModelPrefabs = Resources.LoadAll<TileModel>("Prefabs/Tiles");
-        Debug.Log("LOADED " + m_TileModelPrefabs.Length + " TILES");
+        Debug.Log("LOADED " + m_TileModelPrefabs.Length + " TILES MODEL ; " + m_Tiles.Length + " TILES");
 
         float sumWeights = 0;
         float sumWeightsLogWeights = 0;
@@ -55,13 +49,12 @@ public class TileGenerator : MonoBehaviour
     {
         RemoveTileModels();
 
-        int numberOfTilesRemaining = m_TileModelPrefabs.Length;
+        int numberOfTilesRemaining = m_Tiles.Length;
+
         while (numberOfTilesRemaining > 0) {
-
             //On choisit une tile avec entropie minimale
-            (Tile tile, WFCReturnState nextTileReturnState) = PickNextTile();
-
-            if (nextTileReturnState != WFCReturnState.ContradictionFound) {
+            Tile tile;
+            if ((tile = PickNextTile()) != null) {
 
                 tile.Collapse();
 
@@ -76,19 +69,28 @@ public class TileGenerator : MonoBehaviour
         }
     }
 
-    private (Tile, WFCReturnState) PickNextTile()
+    private Tile PickNextTile()
     {
-        while (m_SortedEntropies.Count > 0) {
-            EntropyTile entropyTile = m_SortedEntropies.Min;
-
+        EntropyTile nextEntropyTile = null;
+        List<EntropyTile> entropyTilesToRemove = new List<EntropyTile>();
+        foreach (EntropyTile entropyTile in m_SortedEntropies) {
             if (!entropyTile.tile.isCollapsed) {
-                return (m_SortedEntropies.Min.tile, WFCReturnState.Good);
+                nextEntropyTile = entropyTile;
+                break;
             }
-
-            m_SortedEntropies.Remove(entropyTile);
+            entropyTilesToRemove.Add(entropyTile);
         }
 
-        return (null, WFCReturnState.ContradictionFound);
+        //Les tiles deja traitées sont enlevées
+        foreach (EntropyTile rem in entropyTilesToRemove) {
+            m_SortedEntropies.Remove(rem);
+        }
+
+        if (nextEntropyTile == null) {
+            OnContradiction();
+        }
+
+        return nextEntropyTile?.tile;
     }
 
     public void OnContradiction()
@@ -100,6 +102,7 @@ public class TileGenerator : MonoBehaviour
 
     public void RegisterNewEntropy(Tile tile)
     {
+        //Debug.Log("NEW ENTROPY ADDED ; ENTROPY = " + tile.Entropy());
         EntropyTile newEntropy = new EntropyTile(tile, tile.Entropy());
         m_SortedEntropies.Add(newEntropy);
     }

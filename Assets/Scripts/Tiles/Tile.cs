@@ -40,16 +40,16 @@ public class Tile : MonoBehaviour
 
         m_SumAllWeights = sumWeights;
         m_SumAllWeightsLogWeights = sumWeightsLogWeights;
-        m_EntropyNoise = Random.Range(0.0f, 0.00001f);
+        m_EntropyNoise = Random.Range(0.0f, 0.1f);
     }
 
     //On choisit le modele de la tile
     public void Collapse()
     {
-        Debug.Log("COLLAPSE");
+        //Debug.Log("COLLAPSE");
         int tileModelIndex = GetPossibleTileIndex();
         m_SavedTileModel = Instantiate(m_TileModels[tileModelIndex].transform, transform).GetComponent<TileModel>();
-        m_SavedTileModel.gameObject.layer = 0;
+        ShowSavedTile();
 
         isCollapsed = true;
 
@@ -57,6 +57,13 @@ public class Tile : MonoBehaviour
             if (i != tileModelIndex) {
                 m_TileModels[i].isPossible = false;
             }
+        }
+    }
+
+    private void ShowSavedTile()
+    {
+        foreach (Transform obj in m_SavedTileModel.GetComponentsInChildren<Transform>()) {
+            obj.gameObject.layer = 0;
         }
     }
 
@@ -95,7 +102,7 @@ public class Tile : MonoBehaviour
             return;
         }
 
-        Debug.Log("PROPAGATE");
+        //Debug.Log("COLLAPSE");
 
         bool hasChanged = false;
 
@@ -119,16 +126,16 @@ public class Tile : MonoBehaviour
             tileGenerator.RegisterNewEntropy(this);
             switch (side) {
                 case TileSide.AB:
-                    Propagate(this, TileSide.BC);
-                    Propagate(this, TileSide.CA);
+                    neighbours[(int)TileSide.BC].Propagate(this, TileSide.BC);
+                    neighbours[(int)TileSide.CA].Propagate(this, TileSide.CA);
                     break;
                 case TileSide.BC:
-                    Propagate(this, TileSide.CA);
-                    Propagate(this, TileSide.AB);
+                    neighbours[(int)TileSide.CA].Propagate(this, TileSide.CA);
+                    neighbours[(int)TileSide.AB].Propagate(this, TileSide.AB);
                     break;
                 case TileSide.CA:
-                    Propagate(this, TileSide.AB);
-                    Propagate(this, TileSide.BC);
+                    neighbours[(int)TileSide.AB].Propagate(this, TileSide.AB);
+                    neighbours[(int)TileSide.BC].Propagate(this, TileSide.BC);
                     break;
                 default:
                     break;
