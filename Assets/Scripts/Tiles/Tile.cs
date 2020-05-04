@@ -23,15 +23,20 @@ public class Tile : MonoBehaviour
     private TileModel[] m_PossibleTileModels;
     private TileModel m_SavedTileModel;
 
-    public void InitTileModels(TileModel[] tileModels)
+    private float m_SumAllWeights = 0;
+    private float m_SumAllWeightsLogWeights = 0;
+
+
+    public void InitTileModels(TileModel[] tileModels, float sumWeights, float sumWeightsLogWeights)
     {
         m_PossibleTileModels = (TileModel[]) tileModels.Clone();
+        m_SumAllWeights = sumWeights;
+        m_SumAllWeightsLogWeights = sumWeightsLogWeights;
     }
 
     //On choisit le modele de la tile
     public void Collapse()
     {
-        //TODO : pour l'instant c'est full random mais c'est ici qu'on va prendre en compte l'entropie
         int tileModelIndex = Random.Range(0, m_PossibleTileModels.Length);
         m_SavedTileModel = Instantiate(m_PossibleTileModels[tileModelIndex].transform, transform).GetComponent<TileModel>();
 
@@ -45,6 +50,11 @@ public class Tile : MonoBehaviour
     public void Propagate()
     {
 
+    }
+
+    public float Entropy()
+    {
+        return Mathf.Log(m_SumAllWeights, 2) - (m_SumAllWeightsLogWeights / m_SumAllWeights);
     }
 
     public void RemovePossibleTileModel(int tileModelIndex)

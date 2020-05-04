@@ -35,8 +35,16 @@ public class TileGenerator : MonoBehaviour
         m_TileModelPrefabs = Resources.LoadAll<TileModel>("Prefabs/Tiles");
         Debug.Log("LOADED " + m_TileModelPrefabs.Length + " TILES");
 
+        float sumWeights = 0;
+        float sumWeightsLogWeights = 0;
+
+        foreach (TileModel tileModel in m_TileModelPrefabs) {
+            sumWeights += tileModel.weight;
+            sumWeightsLogWeights += tileModel.weight * Mathf.Log(tileModel.weight, 2);
+        }
+
         foreach (Tile tile in m_Tiles) {
-            tile.InitTileModels(m_TileModelPrefabs);
+            tile.InitTileModels(m_TileModelPrefabs, sumWeights, sumWeightsLogWeights);
         }
     }
 
