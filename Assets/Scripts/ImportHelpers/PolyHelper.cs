@@ -93,11 +93,21 @@ public class PolyHelper : MonoBehaviour
     public void LinkNeighbours()
     {
         Tile[] tiles = planet.GetComponentsInChildren<Tile>();
-
+        bool oneEmpty = false;
         foreach (Tile tile in tiles) {
-            if (tile.neighbourAB != null) tile.neighbourAB.neighbourBC = tile;
-            if (tile.neighbourBC != null) tile.neighbourBC.neighbourAB = tile;
-            if (tile.neighbourCA != null) tile.neighbourCA.neighbourCA = tile;
+            if (tile.neighbourAB != null) {
+                tile.neighbourAB.neighbourBC = tile;
+            }
+            else oneEmpty = true;
+            if (tile.neighbourBC != null) {
+                tile.neighbourBC.neighbourAB = tile;
+            }
+            else oneEmpty = true;
+            if (tile.neighbourCA != null) {
+                tile.neighbourCA.neighbourCA = tile;
+            }
+            else oneEmpty = true;
         }
+        if (oneEmpty) Debug.Log("AT LEAST ONE NEIGHBOUR MISSING");
     } 
 }
