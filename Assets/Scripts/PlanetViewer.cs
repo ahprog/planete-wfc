@@ -14,6 +14,7 @@ public class PlanetViewer : MonoBehaviour
     private bool m_IsMoving = false;
     public float m_Speed = 30f;
 
+    public AnimationCurve animCurve;
 
     private void Update()
     {
@@ -46,6 +47,19 @@ public class PlanetViewer : MonoBehaviour
             planetSystem.Rotate(Vector3.up, mouseMove.x * Time.deltaTime * m_Speed, Space.World);
 
             m_PrevMousePos = Input.mousePosition;
+        }
+    }
+
+    public IEnumerator SpawnAnimation(float duration)
+    {
+        float progress = 0;
+        Vector3 baseScale = planet.transform.localScale;
+
+        while (progress < duration) {
+            progress += Time.deltaTime;
+            float percent = Mathf.Clamp01(progress / duration);
+            planet.transform.localScale = baseScale * animCurve.Evaluate(percent);
+            yield return null;
         }
     }
 

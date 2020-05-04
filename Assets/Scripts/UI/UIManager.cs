@@ -12,5 +12,6 @@ public class UIManager : MonoBehaviour
         tileGenerator.resetsRemaining = 1;
         tileGenerator.ResetTiles();
         tileGenerator.GenerateTiles();
+        StartCoroutine(planetViewer.SpawnAnimation(0.1f));
     }
 }

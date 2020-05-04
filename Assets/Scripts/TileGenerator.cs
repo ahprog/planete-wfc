@@ -29,6 +29,7 @@ public class TileGenerator : MonoBehaviour
     private void Start()
     {
         LoadTiles();
+        GenerateTiles();
     }
 
     private void LoadTiles()
