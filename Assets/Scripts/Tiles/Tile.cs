@@ -37,7 +37,7 @@ public class Tile : MonoBehaviour
     //On choisit le modele de la tile
     public void Collapse()
     {
-        int tileModelIndex = Random.Range(0, m_PossibleTileModels.Length);
+        int tileModelIndex = GetPossibleTileIndex();
         m_SavedTileModel = Instantiate(m_PossibleTileModels[tileModelIndex].transform, transform).GetComponent<TileModel>();
 
         for (int i = 0; i < m_PossibleTileModels.Length; ++i) {
@@ -45,6 +45,24 @@ public class Tile : MonoBehaviour
                 m_PossibleTileModels[i].isPossible = false;
             }
         }
+    }
+
+    private int GetPossibleTileIndex()
+    {
+        float remaining = m_SumAllWeights;
+
+        for (int index = 0; index < m_PossibleTileModels.Length; ++index) {
+            if (m_PossibleTileModels[index].isPossible) {
+                if (remaining >= m_PossibleTileModels[index].weight) {
+                    remaining -= m_PossibleTileModels[index].weight;
+                }
+                else {
+                    return index;
+                }
+            }
+        }
+
+        throw new System.ArithmeticException("Erreur : m_SumAllWeights ne reflete pas la somme des probas de toute les tiles possibles");
     }
 
     public void Propagate()
@@ -88,29 +106,5 @@ public class Tile : MonoBehaviour
         }
 
         return opposite;
-    }
-}
-
-//Pour pouvoir itérer sur les TileModels encore possibles
-public class PossibleTileModelIterator : IEnumerable<TileModel>
-{
-    private TileModel[] m_TileModels;
-    public PossibleTileModelIterator(TileModel[] tileModels)
-    {
-        m_TileModels = tileModels;
-    }
-
-    public IEnumerator<TileModel> GetEnumerator()
-    {
-        foreach (TileModel tileModel in m_TileModels) {
-            if (tileModel.isPossible) {
-                yield return tileModel;
-            }
-        }
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
     }
 }

@@ -96,7 +96,8 @@ public class TileGenerator : MonoBehaviour
 
     private void OnContradiction()
     {
-
+        //TODO : ici il faut reset la generation
+        Debug.Log("CONTRADICTION FOUND");
     }
 
     public void RemoveTileModels()
