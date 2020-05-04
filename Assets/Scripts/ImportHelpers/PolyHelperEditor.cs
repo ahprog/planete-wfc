@@ -18,5 +18,9 @@ public class PolyHelperEditor : Editor
         if (GUILayout.Button("Build faces")) {
             polyHelper.BuildFaces();
         }
+
+        if (GUILayout.Button("Link neighbours")) {
+            polyHelper.LinkNeighbours();
+        }
     }
 }

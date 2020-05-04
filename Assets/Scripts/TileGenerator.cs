@@ -27,10 +27,7 @@ public class TileGenerator : MonoBehaviour
 
     public void RemoveTiles()
     {
-        List<Tile> tiles = new List<Tile>();
-        foreach (Tile tile in planet.GetComponentsInChildren<Tile>()) {
-            tiles.Add(tile);
-        }
+        Tile[] tiles = planet.GetComponentsInChildren<Tile>();
 
         foreach (Tile tile in tiles) {
             Destroy(tile.gameObject);

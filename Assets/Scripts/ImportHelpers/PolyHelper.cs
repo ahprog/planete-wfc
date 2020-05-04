@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class PolyHelper : MonoBehaviour
 {
+    public Transform planet;
     public Transform facetPrefab;
-
+   
     public void BuildFaces()
     {
         Debug.Log("== ADDING FACES ==");
@@ -87,4 +88,16 @@ public class PolyHelper : MonoBehaviour
         return indexes;
     }
     
+
+    //Pour linker chaque voisin
+    public void LinkNeighbours()
+    {
+        Tile[] tiles = planet.GetComponentsInChildren<Tile>();
+
+        foreach (Tile tile in tiles) {
+            if (tile.neighbourAB != null) tile.neighbourAB.neighbourBC = tile;
+            if (tile.neighbourBC != null) tile.neighbourBC.neighbourAB = tile;
+            if (tile.neighbourCA != null) tile.neighbourCA.neighbourCA = tile;
+        }
+    } 
 }
