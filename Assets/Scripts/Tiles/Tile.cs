@@ -5,10 +5,11 @@ using UnityEngine;
 public enum TileSide { AB, BC, CA}
 
 //Represente un triangle du pentakis dodecahedre
+//C'est une "case" qui hébergera à la fin de l'algorithme un motif particulier (une TileModel)
 public class Tile : MonoBehaviour
 {
     /*
-     * Chaque tile est un triangle isocele tel que :
+     * Dans un pentakis dodecahedre haque tile est un triangle isocele tel que :
      *       B 
      *     /  \ 
      *    A -- C
@@ -107,6 +108,9 @@ public class Tile : MonoBehaviour
 
         bool hasChanged = false;
 
+        //Ici on suit une méthode triviale pour choisir quels sont les TileModel possibles à enlever
+        //On regarde pour chaque TileModel de la tile courante si il existe au moins une TileModel de la tile précédente qui puisse s'assembler avec elle
+        //Il est sans doute possible de trouver une méthode plus efficace
         foreach ((TileModel possibleTileModel, int id) in new PossibleTileModelIterator(m_TileModels)) {
             bool foundCompatible = false;
             foreach ((TileModel prevPossibleTileModel, int idPrev) in new PossibleTileModelIterator(prev.GetTileModels())) {
@@ -217,7 +221,7 @@ public class Tile : MonoBehaviour
 //Pour itérer seulement sur les TileModel possibles
 public class PossibleTileModelIterator : IEnumerable<(TileModel, int)>
 {
-    private TileModel[] m_TileModels;
+    private readonly TileModel[] m_TileModels;
     public PossibleTileModelIterator(TileModel[] tileModels)
     {
         m_TileModels = tileModels;

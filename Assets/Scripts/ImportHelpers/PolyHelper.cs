@@ -67,10 +67,7 @@ public class PolyHelper : MonoBehaviour
     //Retourne les index du plus petit côté d'un triangle triangleMesh (donc qui a vertices.Length = 3)
     private (int, int) GetBiggestSide(Mesh triangleMesh)
     {
-        (int, int) indexes = (0, 0);
-        Vector3 p1 = triangleMesh.vertices[0];
-        Vector3 p2 = triangleMesh.vertices[1];
-        Vector3 p3 = triangleMesh.vertices[2];
+        (int, int) indexes;
 
         float sizeP1P2 = Vector3.Distance(triangleMesh.vertices[0], triangleMesh.vertices[1]);
         float sizeP1P3 = Vector3.Distance(triangleMesh.vertices[0], triangleMesh.vertices[2]);

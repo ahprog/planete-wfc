@@ -18,12 +18,14 @@ public class TileModel : MonoBehaviour
     public VertexTileType AType;
     public VertexTileType BType;
     public VertexTileType CType;
-
+    
+    //Fréquence d'apparition du motif
+    //On peut ajuster cette valeur pour obtenir des patterns recurrents différents
     public int weight = 1;
-
 
     public bool isPossible = true;
 
+    //Indique si cette TileModel peut avoir une TileModel other le long de son côté side
     public bool IsCompatible(TileModel other, TileSide side)
     {
         bool isCompatible = false;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Polish pour controler la planete
 public class PlanetViewer : MonoBehaviour
 {
     public Transform planet;
@@ -61,6 +62,13 @@ public class PlanetViewer : MonoBehaviour
             planet.transform.localScale = baseScale * animCurve.Evaluate(percent);
             yield return null;
         }
+    }
+
+    public void AlignOnTile(Tile tile)
+    {
+        planetSystem.localRotation = Quaternion.Euler(Vector3.zero);
+        Vector3 alignedRayTile = tile.transform.position - planet.transform.position;
+        planetSystem.localRotation = Quaternion.FromToRotation(alignedRayTile, -planetSystem.forward);
     }
 
     public void Reset()
