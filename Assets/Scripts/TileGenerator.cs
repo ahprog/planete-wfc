@@ -95,7 +95,7 @@ public class TileGenerator : MonoBehaviour
     {
         //TODO : ici il faut reset la generation
         Debug.Log("CONTRADICTION FOUND");
-        RemoveTileModels();
+        //RemoveTileModels();
     }
 
     public void RegisterNewEntropy(Tile tile)

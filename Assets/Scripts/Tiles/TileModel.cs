@@ -21,7 +21,7 @@ public class TileModel : MonoBehaviour
 
     public int weight = 1;
 
-    [HideInInspector]
+
     public bool isPossible = true;
 
     public bool IsCompatible(TileModel other, TileSide side)

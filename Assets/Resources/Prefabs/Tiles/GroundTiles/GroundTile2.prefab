@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4709953287596122574}
   - component: {fileID: 1324503475804069175}
   - component: {fileID: -8778495484663553820}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GroundTile2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -97,6 +97,7 @@ MonoBehaviour:
   AType: 0
   BType: 0
   CType: 0
+  weight: 1
   isPossible: 1
 --- !u!1 &5756196321484749250
 GameObject:
@@ -109,7 +110,7 @@ GameObject:
   - component: {fileID: 8771120735475518417}
   - component: {fileID: 351915642244035047}
   - component: {fileID: 6331718037884898590}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: tree_pine_short
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +190,7 @@ GameObject:
   - component: {fileID: 7598927886911933544}
   - component: {fileID: 7598927886911933558}
   - component: {fileID: 7598927886911933559}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: tree_pine_short (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

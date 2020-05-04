@@ -32,7 +32,12 @@ public class Tile : MonoBehaviour
 
     public void InitTileModels(TileModel[] tileModels, float sumWeights, float sumWeightsLogWeights)
     {
-        m_TileModels = (TileModel[]) tileModels.Clone();
+        int cpt = 0;
+        m_TileModels = new TileModel[tileModels.Length];
+        foreach (TileModel tileModel in tileModels) {
+            m_TileModels[cpt++] = Instantiate(tileModel, transform);
+        }
+
         m_SumAllWeights = sumWeights;
         m_SumAllWeightsLogWeights = sumWeightsLogWeights;
         m_EntropyNoise = Random.Range(0.0f, 0.00001f);
@@ -41,8 +46,11 @@ public class Tile : MonoBehaviour
     //On choisit le modele de la tile
     public void Collapse()
     {
+        Debug.Log("COLLAPSE");
         int tileModelIndex = GetPossibleTileIndex();
         m_SavedTileModel = Instantiate(m_TileModels[tileModelIndex].transform, transform).GetComponent<TileModel>();
+        m_SavedTileModel.gameObject.layer = 0;
+
         isCollapsed = true;
 
         for (int i = 0; i < m_TileModels.Length; ++i) {
@@ -54,9 +62,7 @@ public class Tile : MonoBehaviour
 
     private int GetPossibleTileIndex()
     {
-        float remaining = m_SumAllWeights;
-
-        Debug.Log(m_SumAllWeights);
+        int remaining = Random.Range(0, (int)m_SumAllWeights + 1);
 
         for (int index = 0; index < m_TileModels.Length; ++index) {
             if (m_TileModels[index].isPossible) {
@@ -82,10 +88,14 @@ public class Tile : MonoBehaviour
 
     private void Propagate(Tile prev, TileSide side)
     {
-        if (prev.HasNoPossibleTiles()) {
+        if (isCollapsed) return;
+
+        if (prev.HasNoPossibleTiles() && !prev.isCollapsed) {
             tileGenerator.OnContradiction();
             return;
         }
+
+        Debug.Log("PROPAGATE");
 
         bool hasChanged = false;
 
@@ -97,7 +107,7 @@ public class Tile : MonoBehaviour
                     break;
                 }
             }
-
+            
             if (!foundCompatible) {
                 RemovePossibleTileModel(id);
                 hasChanged = true;
@@ -138,6 +148,7 @@ public class Tile : MonoBehaviour
     private void RemovePossibleTileModel(int index)
     {
         m_TileModels[index].isPossible = false;
+        m_TileModels[index].transform.name = "REMOVED";
         m_SumAllWeights -= m_TileModels[index].weight;
         m_SumAllWeightsLogWeights -= m_TileModels[index].weight * Mathf.Log(m_TileModels[index].weight, 2);
     }
