@@ -18,29 +18,41 @@ public class Tile : MonoBehaviour
     public Tile[] neighbours = new Tile[3];
 
     [HideInInspector]
-    public List<TileModel> possibleTileModels;
+    public bool isCollapsed = false;
 
-    [HideInInspector]
+    private TileModel[] m_PossibleTileModels;
     private TileModel m_SavedTileModel;
 
     public void InitTileModels(TileModel[] tileModels)
     {
-        possibleTileModels = new List<TileModel>(tileModels);
+        m_PossibleTileModels = (TileModel[]) tileModels.Clone();
     }
 
-    public void ChooseRandomTileModel()
+    //On choisit le modele de la tile
+    public void Collapse()
     {
-        int tileModelIndex = Random.Range(0, possibleTileModels.Count);
-        m_SavedTileModel = Instantiate(possibleTileModels[tileModelIndex].transform, transform).GetComponent<TileModel>();
+        //TODO : pour l'instant c'est full random mais c'est ici qu'on va prendre en compte l'entropie
+        int tileModelIndex = Random.Range(0, m_PossibleTileModels.Length);
+        m_SavedTileModel = Instantiate(m_PossibleTileModels[tileModelIndex].transform, transform).GetComponent<TileModel>();
 
-        for (int i = 0; i < possibleTileModels.Count; ++i) {
+        for (int i = 0; i < m_PossibleTileModels.Length; ++i) {
             if (i != tileModelIndex) {
-                possibleTileModels[i].isPossible = false;
+                m_PossibleTileModels[i].isPossible = false;
             }
         }
     }
 
-    public void RemoveTileModel()
+    public void Propagate()
+    {
+
+    }
+
+    public void RemovePossibleTileModel(int tileModelIndex)
+    {
+        m_PossibleTileModels[tileModelIndex].isPossible = false;
+    }
+
+    public void RemoveSavedTileModel()
     {
         if (m_SavedTileModel != null) {
             Destroy(m_SavedTileModel.gameObject);
@@ -66,5 +78,29 @@ public class Tile : MonoBehaviour
         }
 
         return opposite;
+    }
+}
+
+//Pour pouvoir itérer sur les TileModels encore possibles
+public class PossibleTileModelIterator : IEnumerable<TileModel>
+{
+    private TileModel[] m_TileModels;
+    public PossibleTileModelIterator(TileModel[] tileModels)
+    {
+        m_TileModels = tileModels;
+    }
+
+    public IEnumerator<TileModel> GetEnumerator()
+    {
+        foreach (TileModel tileModel in m_TileModels) {
+            if (tileModel.isPossible) {
+                yield return tileModel;
+            }
+        }
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
     }
 }

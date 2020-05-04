@@ -19,6 +19,8 @@ public class TileModel : MonoBehaviour
     public VertexTileType BType;
     public VertexTileType CType;
 
+    public int weight = 1;
+
     [HideInInspector]
     public bool isPossible = true;
 }
