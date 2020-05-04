@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//Un utilitaire pour faire du debug/hack sur les meshes
 public class PolyHelper : MonoBehaviour
 {
     public Transform planet;
@@ -95,16 +96,16 @@ public class PolyHelper : MonoBehaviour
         Tile[] tiles = planet.GetComponentsInChildren<Tile>();
         bool oneEmpty = false;
         foreach (Tile tile in tiles) {
-            if (tile.neighbourAB != null) {
-                tile.neighbourAB.neighbourBC = tile;
+            if (tile.neighbours[(int)TileSide.AB] != null) {
+                tile.neighbours[(int)TileSide.AB].neighbours[(int)TileSide.BC] = tile;
             }
             else oneEmpty = true;
-            if (tile.neighbourBC != null) {
-                tile.neighbourBC.neighbourAB = tile;
+            if (tile.neighbours[(int)TileSide.BC] != null) {
+                tile.neighbours[(int)TileSide.BC].neighbours[(int)TileSide.AB] = tile;
             }
             else oneEmpty = true;
-            if (tile.neighbourCA != null) {
-                tile.neighbourCA.neighbourCA = tile;
+            if (tile.neighbours[(int)TileSide.CA] != null) {
+                tile.neighbours[(int)TileSide.CA].neighbours[(int)TileSide.CA] = tile;
             }
             else oneEmpty = true;
         }

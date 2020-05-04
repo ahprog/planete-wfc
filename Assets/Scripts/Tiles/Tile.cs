@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum TileSide { AB, BC, CA}
+
 //Represente un triangle du pentakis dodecahedre
 public class Tile : MonoBehaviour
 {
@@ -12,8 +14,7 @@ public class Tile : MonoBehaviour
     *    A -- C
     * avec AB == BC
     */
-    public Tile neighbourAB;
-    public Tile neighbourBC;
-    public Tile neighbourCA;
+
+    public Tile[] neighbours = new Tile[3];
 
 }
