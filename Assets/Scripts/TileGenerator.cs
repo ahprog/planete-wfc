@@ -22,6 +22,8 @@ public class TileGenerator : MonoBehaviour
     private void Awake()
     {
         m_Tiles = planet.GetComponentsInChildren<Tile>();
+        m_SortedEntropies = new SortedSet<EntropyTile>();
+        m_SortedEntropies.Add(new EntropyTile(m_Tiles[0], m_Tiles[0].Entropy()));
     }
 
     private void Start()
@@ -60,10 +62,9 @@ public class TileGenerator : MonoBehaviour
             (Tile tile, WFCReturnState nextTileReturnState) = PickNextTile();
 
             if (nextTileReturnState != WFCReturnState.ContradictionFound) {
-                //2. collapser cette tile
+
                 tile.Collapse();
 
-                //3. propagate
                 tile.LaunchPropagation();
 
                 numberOfTilesRemaining -= 1;
@@ -94,11 +95,13 @@ public class TileGenerator : MonoBehaviour
     {
         //TODO : ici il faut reset la generation
         Debug.Log("CONTRADICTION FOUND");
+        RemoveTileModels();
     }
 
-    public void RegisterNewEntropy()
+    public void RegisterNewEntropy(Tile tile)
     {
-
+        EntropyTile newEntropy = new EntropyTile(tile, tile.Entropy());
+        m_SortedEntropies.Add(newEntropy);
     }
 
     public void RemoveTileModels()

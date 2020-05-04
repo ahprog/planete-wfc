@@ -27,12 +27,15 @@ public class Tile : MonoBehaviour
     private float m_SumAllWeights = 0;
     private float m_SumAllWeightsLogWeights = 0;
 
+    private float m_EntropyNoise;
+
 
     public void InitTileModels(TileModel[] tileModels, float sumWeights, float sumWeightsLogWeights)
     {
         m_TileModels = (TileModel[]) tileModels.Clone();
         m_SumAllWeights = sumWeights;
         m_SumAllWeightsLogWeights = sumWeightsLogWeights;
+        m_EntropyNoise = Random.Range(0.0f, 0.00001f);
     }
 
     //On choisit le modele de la tile
@@ -40,6 +43,7 @@ public class Tile : MonoBehaviour
     {
         int tileModelIndex = GetPossibleTileIndex();
         m_SavedTileModel = Instantiate(m_TileModels[tileModelIndex].transform, transform).GetComponent<TileModel>();
+        isCollapsed = true;
 
         for (int i = 0; i < m_TileModels.Length; ++i) {
             if (i != tileModelIndex) {
@@ -51,6 +55,8 @@ public class Tile : MonoBehaviour
     private int GetPossibleTileIndex()
     {
         float remaining = m_SumAllWeights;
+
+        Debug.Log(m_SumAllWeights);
 
         for (int index = 0; index < m_TileModels.Length; ++index) {
             if (m_TileModels[index].isPossible) {
@@ -100,6 +106,7 @@ public class Tile : MonoBehaviour
 
         //On continue la propagation si on a supprimé au moins une tile possible
         if (hasChanged) {
+            tileGenerator.RegisterNewEntropy(this);
             switch (side) {
                 case TileSide.AB:
                     Propagate(this, TileSide.BC);
@@ -137,7 +144,7 @@ public class Tile : MonoBehaviour
 
     public float Entropy()
     {
-        return Mathf.Log(m_SumAllWeights, 2) - (m_SumAllWeightsLogWeights / m_SumAllWeights);
+        return (Mathf.Log(m_SumAllWeights, 2) - (m_SumAllWeightsLogWeights / m_SumAllWeights)) + m_EntropyNoise;
     }
 
     public void RemoveSavedTileModel()
