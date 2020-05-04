@@ -6,31 +6,42 @@ public class TileGenerator : MonoBehaviour
 {
     public Transform planet;
 
-    private Transform[] m_TilePrefabs;
+    private Tile[] m_Tiles;
+    private TileModel[] m_TileModelPrefabs;
+
+    private void Awake()
+    {
+        m_Tiles = planet.GetComponentsInChildren<Tile>();
+    }
 
     private void Start()
     {
-        m_TilePrefabs = Resources.LoadAll<Transform>("Prefabs/Tiles");
-        Debug.Log("LOADED " + m_TilePrefabs.Length + " TILES");
-
+        LoadTiles();
         GenerateTiles();
     }
 
-
-    public void GenerateTiles()
+    private void LoadTiles()
     {
-        RemoveTiles();
-        foreach (Transform child in planet) {
-            Transform tile = Instantiate(m_TilePrefabs[Random.Range(0, m_TilePrefabs.Length)], child);
+        m_TileModelPrefabs = Resources.LoadAll<TileModel>("Prefabs/Tiles");
+        Debug.Log("LOADED " + m_TileModelPrefabs.Length + " TILES");
+
+        foreach (Tile tile in m_Tiles) {
+            tile.InitTileModels(m_TileModelPrefabs);
         }
     }
 
-    public void RemoveTiles()
+    public void GenerateTiles()
     {
-        Tile[] tiles = planet.GetComponentsInChildren<Tile>();
+        RemoveTileModels();
+        foreach (Tile tile in m_Tiles) {
+            tile.ChooseRandomTileModel();
+        }
+    }
 
-        foreach (Tile tile in tiles) {
-            Destroy(tile.gameObject);
+    public void RemoveTileModels()
+    {
+        foreach (Tile tile in m_Tiles) {
+            tile.RemoveTileModel();
         }
     }
 }
