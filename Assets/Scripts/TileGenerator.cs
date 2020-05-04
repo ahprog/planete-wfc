@@ -17,7 +17,7 @@ public class TileGenerator : MonoBehaviour
     private float m_CachedBaseSumWeightsLogWeights;
 
     [HideInInspector]
-    public int resetsRemaining = 10;
+    public int resetsRemaining = 5;
 
     private void Awake()
     {
