@@ -18,7 +18,6 @@ public class Tile : MonoBehaviour
     public Tile[] neighbours = new Tile[3];
     public TileGenerator tileGenerator;
 
-    [HideInInspector]
     public bool isCollapsed = false;
 
     private TileModel[] m_TileModels;
@@ -40,24 +39,30 @@ public class Tile : MonoBehaviour
 
         m_SumAllWeights = sumWeights;
         m_SumAllWeightsLogWeights = sumWeightsLogWeights;
-        m_EntropyNoise = Random.Range(0.0f, 0.1f);
+        m_EntropyNoise = Random.Range(0.0f, 0.001f);
     }
 
     //On choisit le modele de la tile
     public void Collapse()
     {
-        //Debug.Log("COLLAPSE");
+        if (HasNoPossibleTiles()) {
+            tileGenerator.OnContradiction();
+        }
+
         int tileModelIndex = GetPossibleTileIndex();
+        
         m_SavedTileModel = Instantiate(m_TileModels[tileModelIndex].transform, transform).GetComponent<TileModel>();
         ShowSavedTile();
-
+        
         isCollapsed = true;
-
+        
         for (int i = 0; i < m_TileModels.Length; ++i) {
             if (i != tileModelIndex) {
                 m_TileModels[i].isPossible = false;
+                m_TileModels[i].name = "=" + i + "=";
             }
         }
+        
     }
 
     private void ShowSavedTile()
@@ -100,8 +105,6 @@ public class Tile : MonoBehaviour
             return;
         }
 
-        //Debug.Log("COLLAPSE");
-
         bool hasChanged = false;
 
         foreach ((TileModel possibleTileModel, int id) in new PossibleTileModelIterator(m_TileModels)) {
@@ -118,6 +121,7 @@ public class Tile : MonoBehaviour
                 hasChanged = true;
             }
         }
+
 
         //On continue la propagation si on a supprimé au moins une tile possible
         if (hasChanged) {
@@ -152,7 +156,9 @@ public class Tile : MonoBehaviour
 
     private void RemovePossibleTileModel(int index)
     {
+        //Debug.Log(transform.name + " - Remove Tile Model =" + index + "=");
         m_TileModels[index].isPossible = false;
+        m_TileModels[index].transform.name = "=" + index + "=";
         m_SumAllWeights -= m_TileModels[index].weight;
         m_SumAllWeightsLogWeights -= m_TileModels[index].weight * Mathf.Log(m_TileModels[index].weight, 2);
     }
@@ -174,6 +180,7 @@ public class Tile : MonoBehaviour
         RemoveSavedTileModel();
         foreach (TileModel tileModel in m_TileModels) {
             tileModel.isPossible = true;
+            tileModel.transform.name = "POSSIBLE";
         }
         isCollapsed = false;
         m_SumAllWeights = sumWeights;

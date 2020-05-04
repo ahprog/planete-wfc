@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1998296863739255321}
   - component: {fileID: -1358532795051068366}
   m_Layer: 8
-  m_Name: GroundTile2
+  m_Name: GroundTile5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,7 +95,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AType: 0
   BType: 0
-  CType: 2
+  CType: 1
   weight: 1
   isPossible: 1
 --- !u!1 &2025123455159576556
@@ -156,7 +156,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 0b88a67b19b795c4b8eb31e50f2b3b9f, type: 2}
+  - {fileID: 2100000, guid: 47df0c6d42d738f4c8021a6e397d4322, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -32,7 +32,7 @@ public class TileModel : MonoBehaviour
                 isCompatible = (AType == other.CType && BType == other.BType);
                 break;
             case TileSide.BC:
-                isCompatible = (BType == other.BType && CType == other.BType);
+                isCompatible = (BType == other.BType && CType == other.AType);
                 break;
             case TileSide.CA:
                 isCompatible = (CType == other.AType && AType == other.CType);

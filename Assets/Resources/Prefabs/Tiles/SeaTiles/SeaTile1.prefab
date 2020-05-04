@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3881240572386630870}
   - component: {fileID: 5226402094671423200}
   - component: {fileID: 1998296863739255321}
-  - component: {fileID: 4259532816451969649}
+  - component: {fileID: -1358532795051068366}
   m_Layer: 8
   m_Name: SeaTile1
   m_TagString: Untagged
@@ -80,7 +80,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &4259532816451969649
+--- !u!114 &-1358532795051068366
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

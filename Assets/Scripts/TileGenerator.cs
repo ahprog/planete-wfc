@@ -13,10 +13,11 @@ public class TileGenerator : MonoBehaviour
 
     private SortedSet<EntropyTile> m_SortedEntropies;
 
-    private float m_CachedBaseSumWeights = 0;
-    private float m_CachedBaseSumWeightsLogWeights = 0;
+    private float m_CachedBaseSumWeights;
+    private float m_CachedBaseSumWeightsLogWeights;
 
-    private int m_ResetsRemaining = 10;
+    [HideInInspector]
+    public int resetsRemaining = 10;
 
     private void Awake()
     {
@@ -28,7 +29,6 @@ public class TileGenerator : MonoBehaviour
     private void Start()
     {
         LoadTiles();
-        GenerateTiles();
     }
 
     private void LoadTiles()
@@ -84,14 +84,15 @@ public class TileGenerator : MonoBehaviour
             entropyTilesToRemove.Add(entropyTile);
         }
 
+        if (nextEntropyTile == null) {
+            OnContradiction();
+        }
+
         //Les tiles deja traitées sont enlevées
         foreach (EntropyTile rem in entropyTilesToRemove) {
             m_SortedEntropies.Remove(rem);
         }
 
-        if (nextEntropyTile == null) {
-            OnContradiction();
-        }
 
         return nextEntropyTile?.tile;
     }
@@ -99,10 +100,10 @@ public class TileGenerator : MonoBehaviour
     public void OnContradiction()
     {
         Debug.Log("CONTRADICTION FOUND");
-        if (m_ResetsRemaining > 0) {
+        if (resetsRemaining > 0) {
             ResetTiles();
             GenerateTiles();
-            m_ResetsRemaining -= 1;
+            resetsRemaining -= 1;
         }
     }
 
@@ -118,5 +119,7 @@ public class TileGenerator : MonoBehaviour
         foreach (Tile tile in m_Tiles) {
             tile.ResetTile(m_CachedBaseSumWeights, m_CachedBaseSumWeightsLogWeights);
         }
+        m_SortedEntropies.Clear();
+        m_SortedEntropies.Add(new EntropyTile(m_Tiles[0], m_Tiles[0].Entropy()));
     }
 }

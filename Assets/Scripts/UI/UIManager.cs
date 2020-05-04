@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
 
     public void Reset()
     {
+        tileGenerator.resetsRemaining = 1;
         tileGenerator.ResetTiles();
         tileGenerator.GenerateTiles();
     }
