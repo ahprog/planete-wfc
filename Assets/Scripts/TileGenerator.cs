@@ -13,6 +13,11 @@ public class TileGenerator : MonoBehaviour
 
     private SortedSet<EntropyTile> m_SortedEntropies;
 
+    private float m_CachedBaseSumWeights = 0;
+    private float m_CachedBaseSumWeightsLogWeights = 0;
+
+    private int m_ResetsRemaining = 10;
+
     private void Awake()
     {
         m_Tiles = planet.GetComponentsInChildren<Tile>();
@@ -31,24 +36,22 @@ public class TileGenerator : MonoBehaviour
         m_TileModelPrefabs = Resources.LoadAll<TileModel>("Prefabs/Tiles");
         Debug.Log("LOADED " + m_TileModelPrefabs.Length + " TILES MODEL ; " + m_Tiles.Length + " TILES");
 
-        float sumWeights = 0;
-        float sumWeightsLogWeights = 0;
+        m_CachedBaseSumWeights = 0;
+        m_CachedBaseSumWeightsLogWeights = 0;
 
         foreach (TileModel tileModel in m_TileModelPrefabs) {
-            sumWeights += tileModel.weight;
-            sumWeightsLogWeights += tileModel.weight * Mathf.Log(tileModel.weight, 2);
+            m_CachedBaseSumWeights += tileModel.weight;
+            m_CachedBaseSumWeightsLogWeights += tileModel.weight * Mathf.Log(tileModel.weight, 2);
         }
 
         foreach (Tile tile in m_Tiles) {
-            tile.InitTileModels(m_TileModelPrefabs, sumWeights, sumWeightsLogWeights);
+            tile.InitTileModels(m_TileModelPrefabs, m_CachedBaseSumWeights, m_CachedBaseSumWeightsLogWeights);
         }
     }
 
     //Ici on implémente le WFC
     public void GenerateTiles()
     {
-        RemoveTileModels();
-
         int numberOfTilesRemaining = m_Tiles.Length;
 
         while (numberOfTilesRemaining > 0) {
@@ -95,9 +98,12 @@ public class TileGenerator : MonoBehaviour
 
     public void OnContradiction()
     {
-        //TODO : ici il faut reset la generation
         Debug.Log("CONTRADICTION FOUND");
-        //RemoveTileModels();
+        if (m_ResetsRemaining > 0) {
+            ResetTiles();
+            GenerateTiles();
+            m_ResetsRemaining -= 1;
+        }
     }
 
     public void RegisterNewEntropy(Tile tile)
@@ -107,10 +113,10 @@ public class TileGenerator : MonoBehaviour
         m_SortedEntropies.Add(newEntropy);
     }
 
-    public void RemoveTileModels()
+    public void ResetTiles()
     {
         foreach (Tile tile in m_Tiles) {
-            tile.RemoveSavedTileModel();
+            tile.ResetTile(m_CachedBaseSumWeights, m_CachedBaseSumWeightsLogWeights);
         }
     }
 }

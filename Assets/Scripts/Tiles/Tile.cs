@@ -69,8 +69,7 @@ public class Tile : MonoBehaviour
 
     private int GetPossibleTileIndex()
     {
-        int remaining = Random.Range(0, (int)m_SumAllWeights + 1);
-
+        int remaining = Random.Range(0, (int)m_SumAllWeights);
         for (int index = 0; index < m_TileModels.Length; ++index) {
             if (m_TileModels[index].isPossible) {
                 if (remaining >= m_TileModels[index].weight) {
@@ -81,7 +80,6 @@ public class Tile : MonoBehaviour
                 }
             }
         }
-
         throw new System.ArithmeticException("Erreur : m_SumAllWeights ne reflete pas la somme des probas de toute les tiles possibles");
     }
 
@@ -155,7 +153,6 @@ public class Tile : MonoBehaviour
     private void RemovePossibleTileModel(int index)
     {
         m_TileModels[index].isPossible = false;
-        m_TileModels[index].transform.name = "REMOVED";
         m_SumAllWeights -= m_TileModels[index].weight;
         m_SumAllWeightsLogWeights -= m_TileModels[index].weight * Mathf.Log(m_TileModels[index].weight, 2);
     }
@@ -170,6 +167,17 @@ public class Tile : MonoBehaviour
         if (m_SavedTileModel != null) {
             Destroy(m_SavedTileModel.gameObject);
         }
+    }
+
+    public void ResetTile(float sumWeights, float sumWeightsLogWeights)
+    {
+        RemoveSavedTileModel();
+        foreach (TileModel tileModel in m_TileModels) {
+            tileModel.isPossible = true;
+        }
+        isCollapsed = false;
+        m_SumAllWeights = sumWeights;
+        m_SumAllWeightsLogWeights = sumWeightsLogWeights;
     }
 
     public static TileSide GetOppositeSide(TileSide side)
